@@ -23,7 +23,30 @@ public class ContaFrancobolli {
 		valoreFrancobolli = ListaFrancobolli;
 		qualiFrancobolli = new int[valoreFrancobolli.length];
 	}
-
+	
+	/**
+	 * 
+	 * @param francobollo il nuovo valore del francobollo da aggiungere all'array dei valori 
+	 */
+	public static void addNuovoFrancobollo(int francobollo) {
+		int [] tempArray = new int[valoreFrancobolli.length+1];
+		// copio i valori dall'array orginale a quello temporaneo 
+		System.arraycopy(valoreFrancobolli, 0, tempArray, 0, valoreFrancobolli.length);
+		//aggiungo i valori all'array temporaneo
+		tempArray[valoreFrancobolli.length+1]= francobollo;
+		// faccio puntare valoreFrancobolli all'array temporaneo
+		valoreFrancobolli = tempArray;
+		//riordino l'array per non rompere l'algoritmo 
+		ordinaValoreFrancobolli();
+	}
+	
+	/**
+	 * riordina in ordine decrescente i valori dei francobolli nell'array valoriFrancobolli;
+	 */
+	private static void ordinaValoreFrancobolli(){
+		//TODO fare l'algoritmo migliore per riordinare l'array, da considerare che l'unico valore non ordinato è quello all'ultimo posto
+	}
+	
 	private int amount = 0;
 
 	public ContaFrancobolli(int amount) {
