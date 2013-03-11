@@ -1,14 +1,92 @@
 package some.packet;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class ContaFrancobolli {
 
 	private static List<Integer> change;
-	private static int[] qualiFrancobolli;
-	private static int[] valoreFrancobolli;
+	private static int[] qualiFrancobolli; //array per il numero di francobolli di quel taglio necessari per arrivare all'importo
+	private static int[] valoreFrancobolli; // il valore nominale dei francobolli disponibili
+	private int importo; //l'importo richiesto 
 	
+	/*
+	 * costruttore della classe
+	 */
+	public ContaFrancobolli(int amount) {
+		this.importo = amount;
+	}
+	
+	/*
+	 * Di seguito i metodi per gestire l'array valoreFrancobolli 
+	 */
+	/**
+	 * @return valoreFrancobolli
+	 */
+	public int[] getValoreFrancobolli() {
+		return valoreFrancobolli;
+	}
+	
+	/**
+	 * @param availableCoins
+	 *            the availableCoins to set
+	 */
+	public void setValoreFrancobolli(int[] ListaFrancobolli) {
+		valoreFrancobolli = ListaFrancobolli;
+		qualiFrancobolli = new int[valoreFrancobolli.length];
+	}
+	
+	public void setValoreFrancobolli() {
+		int[] listaFb = { 330, 300, 200, 140, 85, 75, 50, 10, 5 };
+		setValoreFrancobolli(listaFb);
+	}
+	/**
+	 * 
+	 * @param d il nuovo valore del francobollo da aggiungere all'array dei valori 
+	 * <p>può essere sia int che double, se è int deve essere già moltiplicato per 100
+	 * <p> ad esempio 3.42 deve essere inserito come 342
+	 */
+	public void addNuovoFrancobollo(int valore) {
+		int [] tempArray = new int[valoreFrancobolli.length+1];
+		// copio i valori dall'array orginale a quello temporaneo 
+		System.arraycopy(valoreFrancobolli, 0, tempArray, 0, valoreFrancobolli.length);
+		//aggiungo i valori all'array temporaneo
+		tempArray[valoreFrancobolli.length]= valore;
+		// faccio puntare valoreFrancobolli all'array temporaneo
+		valoreFrancobolli = tempArray;
+		//riordino l'array per non rompere l'algoritmo 
+		ordinaValoreFrancobolli();
+	}
+	
+	public void addNuovoFrancobollo(double d){
+		int val = (int) (d*100);
+		addNuovoFrancobollo(val);
+		
+	}
+	
+	/**
+	 * riordina in ordine decrescente i valori dei francobolli nell'array valoriFrancobolli;
+	 */
+	private static void ordinaValoreFrancobolli(){
+		//uso sort() per riordinare in ordine ascendente
+		Arrays.sort(valoreFrancobolli);
+		//metto l'array in ordine decrescente
+		for (int sinistra=0, destra=valoreFrancobolli.length-1; sinistra<destra; sinistra++, destra--) {
+		    int temp = valoreFrancobolli[sinistra];
+		    valoreFrancobolli[sinistra]  = valoreFrancobolli[destra];
+		    valoreFrancobolli[destra] = temp;
+		}
+	}
+	
+	public int getQualiFrancobolliLength(){
+		return qualiFrancobolli.length;
+	}
+	
+	
+	/*
+	 * L'algoritmo che trova il minor numero di francobolli necessari
+	 */
 	/**
 	 * @return the change
 	 */
@@ -16,56 +94,15 @@ public class ContaFrancobolli {
 		return change;
 	}
 	/**
-	 * @param availableCoins
-	 *            the availableCoins to set
+	 * @param change the change to set
 	 */
-	public static void setValoreFrancobolli(int[] ListaFrancobolli) {
-		valoreFrancobolli = ListaFrancobolli;
-		qualiFrancobolli = new int[valoreFrancobolli.length];
-	}
-	
-	/**
-	 * 
-	 * @param francobollo il nuovo valore del francobollo da aggiungere all'array dei valori 
-	 */
-	public static void addNuovoFrancobollo(int francobollo) {
-		int [] tempArray = new int[valoreFrancobolli.length+1];
-		// copio i valori dall'array orginale a quello temporaneo 
-		System.arraycopy(valoreFrancobolli, 0, tempArray, 0, valoreFrancobolli.length);
-		//aggiungo i valori all'array temporaneo
-		tempArray[valoreFrancobolli.length+1]= francobollo;
-		// faccio puntare valoreFrancobolli all'array temporaneo
-		valoreFrancobolli = tempArray;
-		//riordino l'array per non rompere l'algoritmo 
-		ordinaValoreFrancobolli();
-	}
-	
-	/**
-	 * riordina in ordine decrescente i valori dei francobolli nell'array valoriFrancobolli;
-	 */
-	private static void ordinaValoreFrancobolli(){
-		//TODO fare l'algoritmo migliore per riordinare l'array, da considerare che l'unico valore non ordinato è quello all'ultimo posto
-	}
-	
-	private int amount = 0;
-
-	public ContaFrancobolli(int amount) {
-		this.amount = amount;
-	}
-	public int getQualiFrancobolliLength(){
-		return qualiFrancobolli.length;
-	}
-	
-	/**
-	 * @return valoreFrancobolli
-	 */
-	public int[] getValoreFrancobolli() {
-		return valoreFrancobolli;
+	public void setChange(List<Integer> change) {
+		ContaFrancobolli.change = change;
 	}
 
 	public List<Integer> makeChange() {
 		List<Integer> current = new ArrayList<Integer>();
-		return makeChange(amount, 0, current);
+		return makeChange(importo, 0, current);
 	}
 
 	public List<Integer> makeChange(int amount, int currentStamp,
@@ -106,7 +143,15 @@ public class ContaFrancobolli {
 			return pathA.size() < pathB.size() ? pathA : pathB;
 		}
 	}
-
+	
+	/*
+	 * 
+	 */
+	/**
+	 * 
+	 * @param i la posizione nell'array
+	 * @return il valore per quell'indice
+	 */
 	public int qualeFrancobollo(int i) {
 		return qualiFrancobolli[i];
 	}
@@ -128,18 +173,6 @@ public class ContaFrancobolli {
 				}
 			}
 		}
-	}
-
-	/**
-	 * @param change the change to set
-	 */
-	public void setChange(List<Integer> change) {
-		ContaFrancobolli.change = change;
-	}
-
-	public void setValoreFrancobolli() {
-		int[] listaFb = { 330, 300, 200, 140, 85, 75, 50, 10, 5 };
-		setValoreFrancobolli(listaFb);
 	}
 
 	public int valoreFrancobollo(int i){
