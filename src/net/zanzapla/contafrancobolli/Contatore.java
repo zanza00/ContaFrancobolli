@@ -1,6 +1,6 @@
-package some.packet;
+package net.zanzapla.contafrancobolli;
 
-import some.packet.ContaFrancobolli;
+import net.zanzapla.contafrancobolli.ContaFrancobolli;
 
 public class Contatore {
 	

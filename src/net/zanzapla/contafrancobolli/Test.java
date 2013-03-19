@@ -1,4 +1,4 @@
-package some.packet;
+package net.zanzapla.contafrancobolli;
 
 import java.util.Arrays;
 
